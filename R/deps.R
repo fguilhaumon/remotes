@@ -138,9 +138,12 @@ dev_package_deps <- function(pkgdir = ".", dependencies = NA,
       repos[missing_repos] <- bioc_repos[missing_repos]
   }
 
+  rem_deps <- extra_deps(pkg, "remotes")
+  deps <- deps[!(deps %in% rem_deps$package)]
+  
   cran_deps <- package_deps(deps, repos = repos, type = type)
 
-  res <- combine_remote_deps(cran_deps, extra_deps(pkg, "remotes"))
+  res <- rbind(rem_deps, cran_deps)
 
   res <- do.call(rbind, c(list(res), lapply(get_extra_deps(pkg, dependencies), extra_deps, pkg = pkg), stringsAsFactors = FALSE))
 
